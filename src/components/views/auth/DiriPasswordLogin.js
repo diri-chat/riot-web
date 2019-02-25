@@ -24,7 +24,7 @@ import { getPublicKeyFromPrivate } from "blockstack/lib/keys";
  * A pure UI component which displays a login button via a decentralized identifier.
  */
 export default class DiriPasswordLogin extends React.Component {
-    static repaces = "PasswordLogin";
+    static replaces = "PasswordLogin";
 
     static defaultProps = {
         hsDomain: ""
