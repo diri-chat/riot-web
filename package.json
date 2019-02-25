@@ -66,6 +66,7 @@
     "bluebird": "^3.5.2",
     "browser-request": "^0.3.3",
     "draft-js": "^0.11.0-alpha",
+    "eosjs": "^16.0.9",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "favico.js": "^0.3.10",
     "gemini-scrollbar": "github:matrix-org/gemini-scrollbar#b302279",
@@ -78,6 +79,8 @@
     "react": "^15.6.0",
     "react-dom": "^15.6.0",
     "sanitize-html": "^1.19.1",
+    "scatterjs-core": "^2.7.14",
+    "scatterjs-plugin-eosjs": "^1.5.1",
     "ua-parser-js": "^0.7.19",
     "url": "^0.11.0"
   },
