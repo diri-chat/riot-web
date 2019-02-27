@@ -155,45 +155,60 @@ export default class DiriPasswordLogin extends React.Component {
         });
         ScatterJS.connect("Diri Chat", { network }).then(connected => {
             if (!connected) return console.error("no scatter");
-
-            const eos = ScatterJS.eos(network, Eos);
-
-            ScatterJS.login().then(id => {
-                if (!id) return console.error("no identity");
-                const account = ScatterJS.account("eos");
-                const publicKey = ScatterJS.scatter.identity.publicKey;
-                const data = account.name;
-                ScatterJS.scatter
-                    .getArbitrarySignature(publicKey, data)
-                    .then(signature => {
-                        console.log(signature);
-                        this.scatterStateFromAccount(
-                            ScatterJS.scatter.identity
-                        ).then(
-                            state => {
-                                this.setState(state);
-                                console.log(state);
-                                this.submitScatterResponse(
-                                    state.scatter.accountName,
-                                    signature,
-                                    state.txid
+            console.log("connected", { connected });
+            fetch("https://eu.eosdac.io/v1/chain/get_info")
+                .then(response => {
+                    return response.json();
+                })
+                .then(chainInfo => {
+                    console.log(chainInfo, { chainInfo });
+                    ScatterJS.login().then(id => {
+                        if (!id) return console.error("no identity");
+                        const account = ScatterJS.account("eos");
+                        const publicKey = account.publicKey;
+                        const message = `${
+                            account.name
+                        } would like to login using the ${
+                            account.authority
+                        } permission. Block ID: ${
+                            chainInfo.last_irreversible_block_num
+                        } ${chainInfo.last_irreversible_block_id
+                            .slice(-12)
+                            .toUpperCase()}`;
+                        console.log("message", message);
+                        ScatterJS.scatter
+                            .getArbitrarySignature(publicKey, message)
+                            .then(signature => {
+                                console.log(signature);
+                                this.scatterStateFromAccount(
+                                    ScatterJS.scatter.identity
+                                ).then(
+                                    state => {
+                                        this.setState(state);
+                                        console.log(state);
+                                        this.submitScatterResponse(
+                                            state.scatter.accountName,
+                                            message,
+                                            signature,
+                                            state.txid
+                                        );
+                                    },
+                                    error => {
+                                        console.log("error on submit", error);
+                                    }
                                 );
-                            },
-                            error => {
-                                console.log("error on submit", error);
-                            }
-                        );
+                            });
                     });
-            });
+                });
         });
     }
 
-    submitScatterResponse(accountName, signature, txid) {
+    submitScatterResponse(accountName, message, signature, txid) {
         this.props.onSubmit(
             accountName,
             "",
             "",
-            txid + "|" + window.origin + "|" + signature
+            txid + "|" + message + "|" + signature
         );
     }
     submitUserResponse(challenge, username, address, txid) {
