@@ -156,7 +156,7 @@ export default class DiriPasswordLogin extends React.Component {
         ScatterJS.connect("Diri Chat", { network }).then(connected => {
             if (!connected) return console.error("no scatter");
             console.log("connected", { connected });
-            fetch("https://eu.eosdac.io/v1/chain/get_info")
+            fetch("https://node.get-scatter.com/v1/chain/get_info")
                 .then(response => {
                     return response.json();
                 })
