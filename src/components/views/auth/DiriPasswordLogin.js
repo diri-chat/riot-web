@@ -60,7 +60,9 @@ export default class DiriPasswordLogin extends React.Component {
     }
 
     componentDidMount() {
+        console.log("component did mount", blockstack);
         if (blockstack.isUserSignedIn()) {
+            console.log("user is signed");
             const userData = blockstack.loadUserData();
             this.blockstackStateFromUserData(userData).then(state => {
                 this.setState(state);
@@ -72,6 +74,7 @@ export default class DiriPasswordLogin extends React.Component {
                 );
             });
         } else if (blockstack.isSignInPending()) {
+            console.log("signIn is pending");
             blockstack.handlePendingSignIn().then(userData => {
                 this.blockstackStateFromUserData(userData).then(state => {
                     this.setState(state);
@@ -80,11 +83,6 @@ export default class DiriPasswordLogin extends React.Component {
                         state.blockstack.userData.username,
                         state.blockstack.address,
                         state.txid
-                    );
-                    history.replaceState(
-                        {},
-                        "OI Chat",
-                        window.location.origin + window.location.pathname
                     );
                 });
             });
@@ -204,13 +202,11 @@ export default class DiriPasswordLogin extends React.Component {
     }
 
     submitScatterResponse(accountName, message, signature, txid) {
-        this.props.onSubmit(
-            accountName,
-            "",
-            "",
-            txid + "|" + message + "|" + signature
-        );
+        const password = txid + "|" + message + "|" + signature;
+        console.log("u/p", { accountName, password }, password.length);
+        this.props.onSubmit(accountName, "", "", password);
     }
+
     submitUserResponse(challenge, username, address, txid) {
         blockstack
             .putFile("mxid.json", challenge, { encrypt: false, sign: true })
